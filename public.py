@@ -317,4 +317,5 @@ def terminal_progress():
         time.sleep(1)
 
 threading.Thread(target=terminal_progress, daemon=True).start()
+
 bot.run_until_disconnected()
